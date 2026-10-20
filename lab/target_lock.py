@@ -112,7 +112,9 @@ def position_distance(detection, position):
     # ========== YOUR CODE HERE: Step 3: position_distance ==========
     # The straight-line (Euclidean) distance between box_position(detection)
     # and position. Both are fractions of the image, so compare them directly.
-    raise NotImplementedError
+    pos = box_position(detection)
+    return np.sqrt((pos[0]-position[0])**2 - + (pos[1]-position[1])**2) # euclidean distance
+
     # ===============================================================
 
 
@@ -142,7 +144,10 @@ def pick_target(targets, lock):
     #      the nearest one. Nobody that close? None.
     # Tip: min(people, key=lambda d: position_distance(d, lock.position))
     # is the nearest of a non-empty list.
-    raise NotImplementedError
+    if not lock.position:
+        return min(targets, key=lambda d: abs(box_offset(d)))
+    else:
+        return min(targets, key=lambda t: position_distance(t, lock.position))
     # =========================================================
 
 
