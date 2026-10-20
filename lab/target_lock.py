@@ -147,7 +147,11 @@ def pick_target(targets, lock):
     if not lock.position:
         return min(targets, key=lambda d: abs(box_offset(d)))
     else:
-        return min(targets, key=lambda t: position_distance(t, lock.position))
+        new_targets = [target for target in targets if position_distance(target, lock.position) <= LOCK_GATE]
+        if not new_targets:
+            return None
+        else:
+            return min(new_targets, key=lambda t: position_distance(t, lock.position))
     # =========================================================
 
 
@@ -162,7 +166,7 @@ def remember(lock, detection):
     """
     # ========== YOUR CODE HERE: Step 3: remember ==========
     # lock.position = where the detection is (box_position).
-    raise NotImplementedError
+    lock.position = box_position(detection)
     # ======================================================
     if USE_COLOR:
         remember_color(lock, detection)  # Optional Step 5

@@ -236,7 +236,11 @@ class StateMachineNode(Node):
         targets = [d for d in detections if detection_class_id(d) == self.target_class_id] #step 1
         if not targets:
             return None
-        target = min(targets, key=lambda d: abs(box_offset(d))) # step 2
+        target = target_lock.pick_target(targets, self.lock)
+        if not target:
+            return None
+        else:
+            target_lock.remember(self.lock, target) 
         self.target_pos = box_offset(target)
         self.last_detection_time = self.get_clock().now()
         return target
